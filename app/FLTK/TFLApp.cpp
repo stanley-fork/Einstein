@@ -880,17 +880,21 @@ TFLApp::UserActionSnapScreen()
 {
 	static std::string prev_filename;
 	const char* filename = ChooseNewFile(
-		"Save Snapshot to PNG Image File",
-		"PNG Image\t*.png",
-		prev_filename.c_str());
+										 "Save Snapshot to PNG Image File",
+										 "PNG Image\t*.png",
+										 prev_filename.c_str());
 	if (!filename)
 		return;
 	prev_filename = filename;
-	int ret = mScreenManager->TakeSnapshot(filename);
+
+	char buf[FL_PATH_MAX];
+	strlcpy(buf, filename, sizeof(buf));
+	fl_filename_setext(buf, sizeof(buf), ".png");
+	int ret = mScreenManager->TakeSnapshot(buf);
 	// A more detailed error handling would be nice.
 	if (ret != 0)
 	{
-		fl_message("Error writing PNG image file.");
+		fl_message("Error writing PNG image file\n%s", buf);
 	}
 }
 
